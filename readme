@@ -1,0 +1,65 @@
+cara running: go run cmd/web/main.go
+cara chmod untuk testing: chmod +x tests/load/vegeta_test.sh
+cara testing : ./tests/load/vegeta_test.sh
+
+result :
+
+evchenko@Laptop-sevchenko go-ecommerce % chmod +x tests/load/vegeta_test.sh
+./tests/load/vegeta_test.sh
+
+=========================================
+🚀 GO PRODUCT API LOAD TEST
+=========================================
+Checking if server is running...
+✅ Server is running
+
+# Creating test targets...
+
+1. # BASELINE TEST (100 requests)
+   Testing with 10 concurrent users, 100 total requests...
+   Requests [total, rate, throughput] 100, 10.10, 10.06
+   Duration [total, attack, wait] 9.942s, 9.902s, 39.611ms
+   Latencies [min, mean, 50, 90, 95, 99, max] 10.614ms, 12.741ms, 11.71ms, 14.059ms, 16.284ms, 43.255ms, 46.9ms
+   Bytes In [total, mean] 427500, 4275.00
+   Bytes Out [total, mean] 0, 0.00
+   Success [ratio] 100.00%
+   Status Codes [code:count] 200:100  
+   Error Set:
+
+========================================= 2. MEDIUM LOAD TEST (1000 requests)
+=========================================
+Testing with 50 concurrent users, 1000 total requests...
+Requests [total, rate, throughput] 1000, 50.05, 50.02
+Duration [total, attack, wait] 19.993s, 19.98s, 12.623ms
+Latencies [min, mean, 50, 90, 95, 99, max] 10.464ms, 14.096ms, 11.857ms, 14.855ms, 23.336ms, 73.576ms, 130.387ms
+Bytes In [total, mean] 4275000, 4275.00
+Bytes Out [total, mean] 0, 0.00
+Success [ratio] 100.00%
+Status Codes [code:count] 200:1000  
+Error Set:
+
+========================================= 3. HIGH LOAD TEST (Product List)
+=========================================
+Testing product listing with 200 RPS for 30 seconds...
+✅ Detailed report saved to report.txt
+
+========================================= 4. RACE CONDITION TEST (Purchase)
+=========================================
+Testing 100 concurrent purchases of same product...
+⚠️ This will test race conditions on stock update
+Requests [total, rate, throughput] 200, 100.54, 0.00
+Duration [total, attack, wait] 1.989s, 1.989s, 82.75µs
+Latencies [min, mean, 50, 90, 95, 99, max] 5.125µs, 53.289µs, 43.604µs, 88.729µs, 111.312µs, 210.041µs, 940.417µs
+Bytes In [total, mean] 0, 0.00
+Bytes Out [total, mean] 0, 0.00
+Success [ratio] 0.00%
+Status Codes [code:count] 0:200  
+Error Set:
+Post "http://localhost:8080/api/products/1/purchase": net/http: invalid header field name "{\"quantity\""
+
+========================================= 5. CHECKING RESULTS
+=========================================
+Checking product stock after purchases...
+2
+
+✅ Load test completed!
