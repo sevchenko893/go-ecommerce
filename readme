@@ -1,4 +1,9 @@
 cara running: go run cmd/web/main.go
+
+cara chmod untuk testing Heavy: chmod +x tests/load/write-heavy-test.sh
+cara testing :
+sevchenko@Laptop-sevchenko go-ecommerce % ./tests/load/write-heavy-test.sh
+
 cara chmod untuk testing: chmod +x tests/load/vegeta_test.sh
 cara testing : ./tests/load/vegeta_test.sh
 
@@ -26,8 +31,8 @@ Checking if server is running...
    Status Codes [code:count] 200:100  
    Error Set:
 
-========================================= 2. MEDIUM LOAD TEST (1000 requests)
-=========================================
+# ========================================= 2. MEDIUM LOAD TEST (1000 requests)
+
 Testing with 50 concurrent users, 1000 total requests...
 Requests [total, rate, throughput] 1000, 50.05, 50.02
 Duration [total, attack, wait] 19.993s, 19.98s, 12.623ms
@@ -38,13 +43,13 @@ Success [ratio] 100.00%
 Status Codes [code:count] 200:1000  
 Error Set:
 
-========================================= 3. HIGH LOAD TEST (Product List)
-=========================================
+# ========================================= 3. HIGH LOAD TEST (Product List)
+
 Testing product listing with 200 RPS for 30 seconds...
 ✅ Detailed report saved to report.txt
 
-========================================= 4. RACE CONDITION TEST (Purchase)
-=========================================
+# ========================================= 4. RACE CONDITION TEST (Purchase)
+
 Testing 100 concurrent purchases of same product...
 ⚠️ This will test race conditions on stock update
 Requests [total, rate, throughput] 200, 100.54, 0.00
@@ -57,8 +62,8 @@ Status Codes [code:count] 0:200
 Error Set:
 Post "http://localhost:8080/api/products/1/purchase": net/http: invalid header field name "{\"quantity\""
 
-========================================= 5. CHECKING RESULTS
-=========================================
+# ========================================= 5. CHECKING RESULTS
+
 Checking product stock after purchases...
 2
 

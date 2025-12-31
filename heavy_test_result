@@ -1,0 +1,131 @@
+sevchenko@Laptop-sevchenko go-ecommerce % chmod +x tests/load/write-heavy-test.sh
+sevchenko@Laptop-sevchenko go-ecommerce % ./tests/load/write-heavy-test.sh
+=========================================
+🔥 WRITE-HEAVY RACE CONDITION LOAD TEST
+=========================================
+Checking if server is running...
+✅ Server is running
+
+Creating test cart...
+Cart ID: 
+
+Resetting product stock...
+Product 1 stock reset to 100
+
+=========================================
+1. ADD TO CART RACE CONDITION TEST
+=========================================
+100 users adding same product to cart at same time
+Mode: unsafe (no locking)
+Requests      [total, rate, throughput]         200, 100.53, 0.00
+Duration      [total, attack, wait]             1.99s, 1.989s, 78.375µs
+Latencies     [min, mean, 50, 90, 95, 99, max]  5.667µs, 69.207µs, 43.708µs, 97.396µs, 135.791µs, 775.562µs, 2.381ms
+Bytes In      [total, mean]                     0, 0.00
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           0.00%
+Status Codes  [code:count]                      0:200  
+Error Set:
+Post "http://localhost:8080/api/cart/items?user_id=999&mode=unsafe": net/http: invalid header field name "{\"product_id\""
+
+Checking cart quantity after race...
+jq: parse error: Invalid numeric literal at line 1, column 3
+
+=========================================
+2. SAFE ADD TO CART TEST
+=========================================
+Same test but with locking
+Mode: safe (with mutex lock)
+Clearing cart...
+Requests      [total, rate, throughput]         200, 100.50, 0.00
+Duration      [total, attack, wait]             1.99s, 1.99s, 15.333µs
+Latencies     [min, mean, 50, 90, 95, 99, max]  4.25µs, 50.078µs, 37.895µs, 87.5µs, 109.521µs, 259.458µs, 367.5µs
+Bytes In      [total, mean]                     0, 0.00
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           0.00%
+Status Codes  [code:count]                      0:200  
+Error Set:
+Post "http://localhost:8080/api/cart/items?user_id=998&mode=safe": net/http: invalid header field name "{\"product_id\""
+
+Checking cart quantity (should be exactly 100)...
+jq: parse error: Invalid numeric literal at line 1, column 3
+
+=========================================
+3. FLASH SALE EXTREME RACE CONDITION
+=========================================
+⚠️  WARNING: This will test inventory oversell!
+1000 users trying to buy 100 available products
+Starting flash sale attack...
+
+Flash Sale Results:
+Total requests made: 1000
+Checking product 2 stock (should be 0, but might be negative!):
+0
+Order stats:
+{
+  "stats": {
+    "failed_orders": 0,
+    "race_conditions": 0,
+    "total_orders": 100
+  }
+}
+
+=========================================
+4. ORDER CREATION RACE CONDITION
+=========================================
+Creating test carts...
+Created 0 carts with items
+Testing order creation race condition...
+Requests      [total, rate, throughput]         150, 50.34, 0.00
+Duration      [total, attack, wait]             2.98s, 2.98s, 48.667µs
+Latencies     [min, mean, 50, 90, 95, 99, max]  5.208µs, 75.958µs, 50.062µs, 104.999µs, 161.29µs, 1.212ms, 1.323ms
+Bytes In      [total, mean]                     0, 0.00
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           0.00%
+Status Codes  [code:count]                      0:150  
+Error Set:
+Post "http://localhost:8080/api/orders?user_id=2001&mode=unsafe": net/http: invalid header field name "{\"cart_id\""
+Post "http://localhost:8080/api/orders?user_id=2002&mode=unsafe": net/http: invalid header field name "{\"cart_id\""
+
+Checking product 3 stock after race...
+Initial stock: 4
+Counting successful orders...
+Total orders: 100
+Failed orders: 0
+Race conditions detected: 0
+
+=========================================
+5. MIXED READ/WRITE WORKLOAD
+=========================================
+Running mixed workload (60 seconds)...
+Requests      [total, rate, throughput]         6000, 100.02, 75.00
+Duration      [total, attack, wait]             1m0s, 59.989s, 11.761ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  3.75µs, 11.429ms, 10.406ms, 21.493ms, 22.464ms, 54.281ms, 330.012ms
+Bytes In      [total, mean]                     13290175, 2215.03
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           75.00%
+Status Codes  [code:count]                      0:1500  200:4500  
+Error Set:
+Post "http://localhost:8080/api/cart/items?user_id=3001&mode=unsafe": net/http: invalid header field name "{\"quantity\""
+Post "http://localhost:8080/api/cart/items?user_id=3001&mode=unsafe": net/http: invalid header field name "{\"product_id\""
+Post "http://localhost:8080/api/cart/items?user_id=3001&mode=unsafe": net/http: invalid header field name "POST http"
+
+=========================================
+🎯 TEST RESULTS SUMMARY
+=========================================
+Final Stock Status:
+Product 1 stock: 100
+Product 2 stock: 0
+Product 3 stock: 4
+Product 4 stock: 5
+Product 5 stock: 6
+
+Order Statistics:
+{
+  "failed_orders": 0,
+  "race_conditions": 0,
+  "total_orders": 100
+}
+
+✅ Load test completed!
+Check for negative stock values to identify race conditions
+sevchenko@Laptop-sevchenko go-ecommerce % 

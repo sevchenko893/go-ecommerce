@@ -177,3 +177,18 @@ func contains(s, substr string) bool {
 	}
 	return false
 }
+
+// Tambahkan method ini di ProductService
+func (s *ProductService) UpdateStockDirect(productID, newStock int) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	product, exists := s.products[productID]
+	if !exists {
+		return false
+	}
+
+	product.Stock = newStock
+	product.UpdatedAt = time.Now()
+	return true
+}
